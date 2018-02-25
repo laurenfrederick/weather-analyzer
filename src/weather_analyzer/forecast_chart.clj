@@ -150,8 +150,10 @@
     :forecast [:precip-heavy :precipitation :windy :wind-shift]}])
 
 (def weather-to-cloud-level
-  {"Overcast" :overcast
-   "Clear" :clear})
+  {"Overcast" {:heights [:overcast]
+               :sky-cover 100}
+   "Clear" {:heights [:clear]
+            :sky-cover 0}})
 
 (def forecast-codes
  {:clear "Clear or scattered clouds"

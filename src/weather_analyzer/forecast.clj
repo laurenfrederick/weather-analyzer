@@ -53,7 +53,7 @@
   levels are a list."
   [conditions forecast]
   (if-let [cloud-levels (:clouds forecast)]
-    (not-empty (set/intersection (set cloud-levels) (set (:cloud-levels conditions))))
+    (not-empty (set/intersection (set cloud-levels) (set (:heights (:cloud-levels conditions)))))
     default-if-not-present))
 
 (def analyzer-functions
@@ -82,11 +82,13 @@
   or precipitating, we don't need to know low/medium/high"
   [current-conditions cloud-levels]
   (if (is-precipitating? (:precip_1hr_metric current-conditions))
-    [:precipitation]
+    {:heights [:precipitation]
+     :sky-cover 100}
     (if-let [clouds (chart/weather-to-cloud-level (:weather current-conditions))]
-      [clouds]
+      clouds
       (if (empty? cloud-levels)
-        [:clear]
+        {:heights [:precipitation]
+         :sky-cover 100}
         cloud-levels))))
 
 (defn- generate-forecast-string
